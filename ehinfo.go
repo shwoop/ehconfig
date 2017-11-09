@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	stateDir, lockDir, key, configFile, lockFile string
-	action                                       ActionFunction
+	stateDir, lockDir, key, configDir, configFile, lockFile string
+	action                                                  ActionFunction
 }
 
 var config Config
@@ -60,6 +60,8 @@ func init() {
 	filename.WriteString(objType)
 	filename.WriteRune('/')
 	filename.WriteString(objUuid)
+	config.configDir = filename.String()
+
 	filename.WriteString("/config.json")
 	config.configFile = filename.String()
 
