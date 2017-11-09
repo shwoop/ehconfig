@@ -4,81 +4,14 @@ import (
   "bytes"
   "fmt"
   "os"
-  "bufio"
-  "io"
-  "strings"
-  "encoding/json"
-  "errors"
 )
 
-type ActionFunction func()
 
 type Config struct {
   stateDir, lockDir, key, configFile, lockFile string
   action ActionFunction
 }
 var config Config
-
-func help(exitCode int) {
-  fmt.Println("ehinfo json TYPE UUID")
-  fmt.Println("       put  TYPE UUID")
-  fmt.Println("       get  TYPE UUID KEY")
-  fmt.Println("       info TYPE UUID")
-  fmt.Println("")
-  fmt.Println("Actions:")
-  fmt.Println("  json: Place provided json onto object state")
-  fmt.Println("  put:  Place key value data from stdin on object state")
-  fmt.Println("  get:  Retreive value of key from object state")
-  fmt.Println("  info: Retreive entire state from object")
-  fmt.Println("")
-  os.Exit(exitCode)
-}
-
-func putText() {
-  var line []string
-  strm := bufio.NewReader(os.Stdin)
-  output := make(map[string]string)
-  input, err := strm.ReadString('\n')
-  for err != io.EOF {
-    input = strings.TrimRight(input, "\n")
-    line = strings.Split(input, " ")
-    output[line[0]] = line[1]
-    input, err = strm.ReadString('\n')
-  }
-  enc := json.NewEncoder(os.Stdout)
-  enc.Encode(output)
-  fmt.Println(config.stateDir)
-}
-
-func putJson() {
-}
-
-
-func getSingleValue() {
-}
-
-func getAll() {
-}
-
-func checkType(objType string) (string, error) {
-  objType = strings.ToLower(objType)
-  switch objType {
-  case "guest":
-  case "container":
-  case "drive":
-  case "folder":
-  default:
-    return "", errors.New("Unsupported type: " + objType)
-  }
-  return objType, nil
-}
-
-func checkError(err error) {
-  if err != nil {
-    fmt.Fprintln(os.Stderr, err)
-    os.Exit(1)
-  }
-}
 
 func init() {
   args := os.Args[1:]
