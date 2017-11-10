@@ -14,17 +14,16 @@ type JsonMapping map[string]string
 
 // help outputs helpful information about calling the program.
 func help(exitCode int) {
-	fmt.Println("ehinfo json TYPE UUID")
-	fmt.Println("       put  TYPE UUID")
-	fmt.Println("       get  TYPE UUID KEY")
-	fmt.Println("       info TYPE UUID")
-	fmt.Println("")
-	fmt.Println("Actions:")
-	fmt.Println("  json: Place provided json onto object state")
-	fmt.Println("  put:  Place key value data from stdin on object state")
-	fmt.Println("  get:  Retreive value of key from object state")
-	fmt.Println("  info: Retreive entire state from object")
-	fmt.Println("")
+	fmt.Printf(`ehinfo json TYPE UUID
+       put  TYPE UUID
+       get  TYPE UUID KEY
+       info TYPE UUID
+Actions:
+  json: Place provided json onto object state
+  put:  Place key value data from stdin on object state
+  get:  Retreive value of key from object state
+  info: Retreive entire state from object
+	`)
 	os.Exit(exitCode)
 }
 
