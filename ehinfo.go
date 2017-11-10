@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 )
 
@@ -77,6 +76,4 @@ func init() {
 
 func main() {
 	config.action()
-	fmt.Println("lock file", config.lockFile)
-	fmt.Println("config file", config.configFile)
 }
