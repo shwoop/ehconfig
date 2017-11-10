@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	// "io/ioutil"
 	"os"
 	"strings"
 )
 
+// ActionFunc defines the signature of the action functions.
 type ActionFunction func()
 
+// putText reads text from stdin and updates the objects config.
 func putText() {
 	var input string
 	var line []string
@@ -27,6 +28,7 @@ func putText() {
 	writeToConfigFile(info)
 }
 
+// putJson reads json envoded text from stdin and updats the objects config.
 func putJson() {
 	input := make(JsonMapping)
 	info := decodeConfigFile()
@@ -42,6 +44,7 @@ func putJson() {
 	writeToConfigFile(info)
 }
 
+// getSingleValue prints a value stored against the objects config.
 func getSingleValue() {
 	info := decodeConfigFile()
 	if val := info[config.key]; val != "" {
@@ -51,6 +54,7 @@ func getSingleValue() {
 	os.Exit(1)
 }
 
+// getAll prints the entire config for a given object.
 func getAll() {
 	info := decodeConfigFile()
 	enc := json.NewEncoder(os.Stdout)

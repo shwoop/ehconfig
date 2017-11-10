@@ -9,8 +9,10 @@ import (
 	"strings"
 )
 
+// JsonMapping is the dictionary like mapping used to store an objects config.
 type JsonMapping map[string]string
 
+// help outputs helpful information about calling the program.
 func help(exitCode int) {
 	fmt.Println("ehinfo json TYPE UUID")
 	fmt.Println("       put  TYPE UUID")
@@ -26,6 +28,7 @@ func help(exitCode int) {
 	os.Exit(exitCode)
 }
 
+// checkType validates the provided object type is known and supported.
 func checkType(objType string) (string, error) {
 	objType = strings.ToLower(objType)
 	switch objType {
@@ -36,6 +39,9 @@ func checkType(objType string) (string, error) {
 	return objType, nil
 }
 
+// updateInfo manages updating an objects config in memory.
+// If a value is presented it is updated/edited on the config, otherwise the
+// value is removed.
 func updateInfo(info JsonMapping, k, v string) {
 	if v == "" {
 		delete(info, k)
@@ -44,10 +50,14 @@ func updateInfo(info JsonMapping, k, v string) {
 	}
 }
 
+// printTostderr is a helper funciton to print a string to stderr.
 func printToStderr(msg string) {
 	fmt.Fprintln(os.Stderr, msg)
 }
 
+// checkError checks if an error has been triggered.
+// In the case of an error, it's message is printed to stderr and the program
+// is closed.
 func checkError(err error) {
 	if err != nil {
 		printToStderr(err.Error())
@@ -55,6 +65,9 @@ func checkError(err error) {
 	}
 }
 
+// decodeConfigFile returns the existing config for an object.
+// It attempts to retreive a config from the filesystem, in the event one does
+// not exist an empty JsonMapping is returned.
 func decodeConfigFile() JsonMapping {
 	output := make(JsonMapping)
 	if _, err := os.Stat(config.configFile); !os.IsNotExist(err) {
@@ -69,6 +82,9 @@ func decodeConfigFile() JsonMapping {
 	return output
 }
 
+// writeToConfigFile writes a provided JsonMapping to the filesystem.
+// The function is atomic, in that it writes to a temporary file and swaps them
+// rather than writing sequentially to the config file.
 func writeToConfigFile(info JsonMapping) {
 	err := os.MkdirAll(config.configDir, 0777)
 	checkError(err)

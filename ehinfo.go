@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// Config is the global config type storing relevant calling info.
 type Config struct {
 	stateDir, lockDir, key, configDir, configFile, lockFile string
 	action                                                  ActionFunction
@@ -12,6 +13,8 @@ type Config struct {
 
 var config Config
 
+// init validates the user input.
+// The relevant filesystem paths are also generated at this time.
 func init() {
 	args := os.Args[1:]
 	if len(args) == 0 {
@@ -74,6 +77,7 @@ func init() {
 	config.lockFile = filename.String()
 }
 
+// main is the entrypoint fo the application.
 func main() {
 	config.action()
 }
