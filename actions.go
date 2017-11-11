@@ -42,9 +42,6 @@ func putJson() {
 	info := decodeConfigFile()
 	dec := json.NewDecoder(os.Stdin)
 
-	lock := claimLock()
-	defer lock.Close()
-
 	err := dec.Decode(&input)
 	checkError(err)
 
