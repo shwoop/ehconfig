@@ -15,6 +15,10 @@ type ActionFunction func()
 func putText() {
 	var input string
 	var line []string
+
+	f := claimLock()
+	defer f.Close()
+
 	info := decodeConfigFile()
 	strm := bufio.NewScanner(os.Stdin)
 
@@ -31,8 +35,15 @@ func putText() {
 // putJson reads json envoded text from stdin and updats the objects config.
 func putJson() {
 	input := make(JsonMapping)
+
+	f := claimLock()
+	defer f.Close()
+
 	info := decodeConfigFile()
 	dec := json.NewDecoder(os.Stdin)
+
+	lock := claimLock()
+	defer lock.Close()
 
 	err := dec.Decode(&input)
 	checkError(err)

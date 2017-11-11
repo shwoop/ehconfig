@@ -7,8 +7,8 @@ import (
 
 // Config is the global config type storing relevant calling info.
 type Config struct {
-	stateDir, lockDir, key, configDir, configFile, lockFile string
-	action                                                  ActionFunction
+	key, configDir, configFile, lockDir, lockFile string
+	action                                        ActionFunction
 }
 
 var config Config
@@ -50,14 +50,14 @@ func init() {
 		config.key = args[3]
 	}
 
-	config.stateDir = os.Getenv("STATEDIR")
-	config.lockDir = os.Getenv("LOCKDIR")
+	// stateDir := os.Getenv("STATEDIR")
+	// lockDir := os.Getenv("LOCKDIR")
 	// testing
-	config.stateDir = "/tmp/eh/state"
-	config.lockDir = "/tmp/eh/lock"
+	stateDir := "/tmp/eh/state"
+	lockDir := "/tmp/eh/lock"
 
 	var filename bytes.Buffer
-	filename.WriteString(config.stateDir)
+	filename.WriteString(stateDir)
 	filename.WriteRune('/')
 	filename.WriteString(objType)
 	filename.WriteRune('/')
@@ -69,10 +69,12 @@ func init() {
 
 	filename.Reset()
 
-	filename.WriteString(config.lockDir)
+	filename.WriteString(lockDir)
 	filename.WriteRune('/')
 	filename.WriteString(objType)
 	filename.WriteRune('/')
+	config.lockDir = filename.String()
+
 	filename.WriteString(objUuid)
 	config.lockFile = filename.String()
 }

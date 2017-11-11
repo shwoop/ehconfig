@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"syscall"
 )
 
 // JsonMapping is the dictionary like mapping used to store an objects config.
@@ -96,4 +97,19 @@ func writeToConfigFile(info JsonMapping) {
 	tmpFile.Close()
 	err = os.Rename(tmpFile.Name(), config.configFile)
 	checkError(err)
+}
+
+// claimLock locks out a given object.
+// A file lock is claimed on a given object and it's reference is returned,
+func claimLock() *os.File {
+	os.MkdirAll(config.lockDir, 0777)
+	if _, err := os.Stat(config.lockFile); os.IsNotExist(err) {
+		_, err := os.Create(config.lockFile)
+		checkError(err)
+	}
+	f, err := os.Open(config.lockFile)
+	checkError(err)
+	err = syscall.Flock(int(f.Fd()), syscall.LOCK_EX)
+	checkError(err)
+	return f
 }
