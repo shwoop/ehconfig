@@ -68,10 +68,10 @@ func checkError(err error) {
 // decodeConfigFile returns the existing config for an object.
 // It attempts to retreive a config from the filesystem, in the event one does
 // not exist an empty JsonMapping is returned.
-func decodeConfigFile() JsonMapping {
+func decodeConfigFile(c Config) JsonMapping {
 	output := make(JsonMapping)
-	if _, err := os.Stat(config.configFile); !os.IsNotExist(err) {
-		f, err := os.Open(config.configFile)
+	if _, err := os.Stat(c.configFile); !os.IsNotExist(err) {
+		f, err := os.Open(c.configFile)
 		checkError(err)
 		defer f.Close()
 
@@ -85,29 +85,29 @@ func decodeConfigFile() JsonMapping {
 // writeToConfigFile writes a provided JsonMapping to the filesystem.
 // The function is atomic, in that it writes to a temporary file and swaps them
 // rather than writing sequentially to the config file.
-func writeToConfigFile(info JsonMapping) {
-	err := os.MkdirAll(config.configDir, 0777)
+func writeToConfigFile(c Config, info JsonMapping) {
+	err := os.MkdirAll(c.configDir, 0777)
 	checkError(err)
-	tmpFile, err := ioutil.TempFile(config.configDir, "")
+	tmpFile, err := ioutil.TempFile(c.configDir, "")
 	checkError(err)
 	defer os.Remove(tmpFile.Name())
 
 	enc := json.NewEncoder(tmpFile)
 	enc.Encode(info)
 	tmpFile.Close()
-	err = os.Rename(tmpFile.Name(), config.configFile)
+	err = os.Rename(tmpFile.Name(), c.configFile)
 	checkError(err)
 }
 
 // claimLock locks out a given object.
 // A file lock is claimed on a given object and it's reference is returned,
-func claimLock() *os.File {
-	os.MkdirAll(config.lockDir, 0777)
-	if _, err := os.Stat(config.lockFile); os.IsNotExist(err) {
-		_, err := os.Create(config.lockFile)
+func claimLock(c Config) *os.File {
+	os.MkdirAll(c.lockDir, 0777)
+	if _, err := os.Stat(c.lockFile); os.IsNotExist(err) {
+		_, err := os.Create(c.lockFile)
 		checkError(err)
 	}
-	f, err := os.Open(config.lockFile)
+	f, err := os.Open(c.lockFile)
 	checkError(err)
 	err = syscall.Flock(int(f.Fd()), syscall.LOCK_EX)
 	checkError(err)
