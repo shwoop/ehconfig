@@ -13,9 +13,9 @@ type Config struct {
 
 var config Config
 
-// init validates the user input.
+// buildConfig validates the user input.
 // The relevant filesystem paths are also generated at this time.
-func init() {
+func buildConfig() {
 	args := os.Args[1:]
 	if len(args) == 0 {
 		help(0)
@@ -81,5 +81,6 @@ func init() {
 
 // main is the entrypoint fo the application.
 func main() {
+	buildConfig()
 	config.action()
 }
