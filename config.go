@@ -13,7 +13,7 @@ type Config struct {
 
 // buildConfig validates the user input.
 // The relevant filesystem paths are also generated at this time.
-func buildConfig() Config {
+func buildConfig() (Config, error) {
 	var config Config
 	args := os.Args[1:]
 	if len(args) == 0 {
@@ -27,7 +27,10 @@ func buildConfig() Config {
 	if argLength >= 3 {
 		config.action = putJson
 		objType, err = checkType(args[1])
-		checkError(err)
+		// checkError(err)
+		if err != nil {
+			return Config{}, err
+		}
 		objUuid = args[2]
 	}
 	if argLength == 3 {
@@ -76,5 +79,5 @@ func buildConfig() Config {
 
 	filename.WriteString(objUuid)
 	config.lockFile = filename.String()
-	return config
+	return config, nil
 }
